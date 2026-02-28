@@ -16,16 +16,16 @@ public class VisionSubsystem extends SubsystemBase {
     // ============================================================
     // TUNING CONSTANTS - Edit only these values between deploys
     // ============================================================
-    private static final double INIT_KP             = 0.0002; // .0003
-    private static final double INIT_KI             = 0.2; //.5
-    private static final double INIT_KD             = 0.5; // .7
-    private static final double INIT_MAX_OUTPUT     = 0.04; //.08
+    private static final double INIT_KP             = 0.017; // .0003
+    private static final double INIT_KI             = 0.0; //.5
+    private static final double INIT_KD             = 0.02; // .7
+    private static final double INIT_MAX_OUTPUT     = 0.045; //.08
     private static final double INIT_TOLERANCE      = 3.0;
     private static final double INIT_IZONE          = 5.0;
     private static final double ABSOLUTE_MAX_OUTPUT = 0.18; // dashboard can NEVER exceed this
     // ============================================================
 
-    private final PhotonCamera camera = new PhotonCamera("ZED_2");
+    private final PhotonCamera camera = new PhotonCamera("Logitech,_Inc._Webcam_C270");
     private final SparkMax targetMotor = new SparkMax(25, MotorType.kBrushless);
     private final PIDController pidController = new PIDController(INIT_KP, INIT_KI, INIT_KD);
     private final LinearFilter yawFilter = LinearFilter.singlePoleIIR(0.06, 0.02);
@@ -95,7 +95,7 @@ public class VisionSubsystem extends SubsystemBase {
                     double output = pidController.calculate(filteredYaw);
                     output = MathUtil.clamp(output, -maxOutput, maxOutput);
 
-                    targetMotor.set(-output);
+                    targetMotor.set(output);
                     SmartDashboard.putString("Vision/State",        "TRACKING");
                     SmartDashboard.putNumber("Vision/Motor Output", -output);
                 }
