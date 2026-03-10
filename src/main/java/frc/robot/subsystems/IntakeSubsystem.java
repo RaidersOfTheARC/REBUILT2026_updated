@@ -15,20 +15,20 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // ---------------- Intake Constants ----------------
     private static final int    INTAKE_CAN_ID        =  9;
-    private static final double INTAKE_SPEED_FORWARD =  0.6;
-    private static final double INTAKE_SPEED_REVERSE = -0.6;
+    private static final double INTAKE_SPEED_FORWARD =  .8;
+    private static final double INTAKE_SPEED_REVERSE = -1;
 
     // ---------------- Intake Lift Constants ----------------
     private static final int    INTAKELIFT_CAN_ID        = 10;
-    private static final double INTAKELIFT_SPEED_FORWARD =  0.3;
-    private static final double INTAKELIFT_SPEED_REVERSE = -0.1;
+    private static final double INTAKELIFT_SPEED_FORWARD =  0.8;
+    private static final double INTAKELIFT_SPEED_REVERSE = -0.2;
 
     // -------------------------------------------------------
     // GEAR RATIO — change this to match your physical setup.
     // Example: if your lift gearbox is 20:1, set this to 20.0
     // This converts motor rotations to arm rotations.
     // -------------------------------------------------------
-    private static final double LIFT_GEAR_RATIO = 9.0;
+    private static final double LIFT_GEAR_RATIO = -9.0;
 
     // 90 degrees = 0.25 arm rotations * gear ratio = motor rotations
     private static final double LIFT_90_DEG_ROTATIONS = (110.0 / 360.0) * LIFT_GEAR_RATIO;

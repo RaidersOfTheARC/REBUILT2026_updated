@@ -20,6 +20,8 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 import java.util.List;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import swervelib.SwerveInputStream;
@@ -47,14 +49,16 @@ public class RobotContainer {
   SwerveInputStream driveAngularVelocity =
       SwerveInputStream.of(
               drivebase.getSwerveDrive(),
-              () -> driverXbox.getLeftY() * 0.75,
-              () -> driverXbox.getLeftX() * 0.75)
+              () -> driverXbox.getLeftY(),
+              () -> driverXbox.getLeftX())
           .withControllerRotationAxis(() -> driverXbox.getRightX() * -1)
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
 
   public RobotContainer() {
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
     DriverStation.silenceJoystickConnectionWarning(true);
 
     // ── PathPlanner Named Commands ────────────────────────────────────────
@@ -70,7 +74,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("Shoot",
         new RunCommand(
             () -> {
-              turret.turnRight();
               transfer.runTransfer();
             },
             turret, transfer)
@@ -91,8 +94,7 @@ public class RobotContainer {
     configureBindings();
     configureDefaultCommands();
 
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+  
   }
 
   private void configureDefaultCommands() {
@@ -164,6 +166,15 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> transfer.stopTransferring(), transfer));
 
     // ── Port 1 — Intake lift dpad ─────────────────────────────────────────
+
+      secondaryXbox.a()
+        .whileTrue(new RunCommand(() -> intake.turnRight(), intake))
+        .onFalse(new InstantCommand(() -> intake.stop(), intake));
+      
+      secondaryXbox.b()
+        .whileTrue(new RunCommand(() -> intake.turnLeft(), intake))
+        .onFalse(new InstantCommand(() -> intake.stop(), intake));
+      
 
     secondaryXbox.povUp()
         .whileTrue(new RunCommand(() -> intake.raiseUp(), intake))
