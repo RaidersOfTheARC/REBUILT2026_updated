@@ -5,22 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SpinUpFlywheel"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DrivePath"
-                }
-              }
-            ]
+            "pathName": "TURKISHMAN"
           }
         },
         {

@@ -13,23 +13,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class TurretSubsystem extends SubsystemBase {
 
-    // ---------------- Flywheel Constants ----------------
+    // ---------------- Outake Phoenixx Constants ----------------
     public static final double MAX_RPM            = 6000.0;
     private static final double MIN_SHOOT_RPM     = 2200.0;
     private static final double MIN_DISTANCE_METERS = 1.0;
     private static final double MAX_DISTANCE_METERS = 6.0;
-    private static final int    FLYWHEEL_CAN_ID   = 21;
+    private static final int    OutaleP_CAN_ID   = 21;
 
-    // ---------------- flywheelspin Constants ----------------
-    private static final int    flywheelspin_CAN_ID          =  11;
-    private static final double flywheelspin_SPEED_FORWARD   =  0.2;
-    private static final double flywheelspin_SPEED_REVERSE   = -0.2;
-
+    // ---------------- Outake Neo Constants ----------------
+    private static final int    OutakeNeo_CAN_ID          =  12;
+    private static final double OutakeNeo_SPEED_FORWARD   =  0.9;
+ 
     // ---------------- Hardware ----------------
-    private final TalonFX        flywheelMotor    = new TalonFX(FLYWHEEL_CAN_ID);
+    private final TalonFX        OutalePMotor    = new TalonFX(OutaleP_CAN_ID);
     private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
     private final DutyCycleOut   dutyCycleRequest = new DutyCycleOut(0);
-    private final SparkMax       flywheelspinMotor = new SparkMax(flywheelspin_CAN_ID, MotorType.kBrushless);
+    private final SparkMax       OutakeNeoMotor = new SparkMax(OutakeNeo_CAN_ID, MotorType.kBrushless);
 
     // ---------------- State ----------------
     private boolean isRunning = false;
@@ -54,27 +53,27 @@ public class TurretSubsystem extends SubsystemBase {
         config.Slot0.kD = 0.0;
         config.Slot0.kV = 0.12;
 
-        flywheelMotor.getConfigurator().apply(config);
+        OutalePMotor.getConfigurator().apply(config);
     }
 
-    // ---------------- Flywheel Methods ----------------
+    // ---------------- OutaleP Methods ----------------
 
     public void setTargetRPM(double rpm) {
         double clampedRPM = MathUtil.clamp(rpm, 0.0, MAX_RPM);
-        flywheelMotor.setControl(velocityRequest.withVelocity(clampedRPM / 60.0));
+        OutalePMotor.setControl(velocityRequest.withVelocity(clampedRPM / 60.0));
     }
 
     public void setManualOutput(double percentOutput) {
         double clampedOutput = MathUtil.clamp(percentOutput, -1.0, 1.0);
-        flywheelMotor.setControl(dutyCycleRequest.withOutput(clampedOutput));
+        OutalePMotor.setControl(dutyCycleRequest.withOutput(clampedOutput));
     }
 
     public void stop() {
-        flywheelMotor.stopMotor();
+        OutalePMotor.stopMotor();
     }
 
     public double getCurrentRPM() {
-        return flywheelMotor.getVelocity().getValueAsDouble() * 60.0;
+        return OutalePMotor.getVelocity().getValueAsDouble() * 60.0;
     }
 
     public double getRPMForDistance(double distanceMeters) {
@@ -84,43 +83,38 @@ public class TurretSubsystem extends SubsystemBase {
         return MIN_SHOOT_RPM + normalized * (MAX_RPM - MIN_SHOOT_RPM);
     }
 
-    // ---------------- flywheelspin Methods ----------------
+    // ---------------- OutakeNeo Methods ----------------
 
-    public void turnRight() {
+    public void Shoot() {
         isRunning = true;
-        flywheelspinMotor.set(flywheelspin_SPEED_FORWARD);
-    }
-
-    public void turnLeft() {
-        isRunning = true;
-        flywheelspinMotor.set(flywheelspin_SPEED_REVERSE);
+        OutakeNeoMotor.set(OutakeNeo_SPEED_FORWARD);
     }
 
     public void stopSpinning() {
         isRunning = false;
-        flywheelspinMotor.set(0);
+        OutakeNeoMotor.set(0);
     }
 
     public boolean isRunning() {
         return isRunning;
     }
 
-    public double getflywheelspinCurrent() {
-        return flywheelspinMotor.getOutputCurrent();
+    public double getOutakeNeoCurrent() {
+        return OutakeNeoMotor.getOutputCurrent();
     }
 
     // ---------------- Single Merged Periodic ----------------
     @Override
     public void periodic() {
-        // Flywheel telemetry
+        // OutaleP telemetry
         SmartDashboard.putNumber("Shooter/RPM",     getCurrentRPM());
-        SmartDashboard.putNumber("Shooter/Voltage", flywheelMotor.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter/Current", flywheelMotor.getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter/Voltage", OutalePMotor.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter/Current", OutalePMotor.getStatorCurrent().getValueAsDouble());
 
-        // flywheelspin telemetry
-        SmartDashboard.putBoolean("flywheelspin/IsRunning", isRunning);
-        SmartDashboard.putNumber("flywheelspin/Current",    flywheelspinMotor.getOutputCurrent());
-        SmartDashboard.putNumber("flywheelspin/Voltage",    flywheelspinMotor.getBusVoltage());
-        SmartDashboard.putNumber("flywheelspin/Speed",      flywheelspinMotor.getEncoder().getVelocity());
+        // OutakeNeo telemetry
+        SmartDashboard.putBoolean("OutakeNeo/IsRunning", isRunning);
+        SmartDashboard.putNumber("OutakeNeo/Current",    OutakeNeoMotor.getOutputCurrent());
+        SmartDashboard.putNumber("OutakeNeo/Voltage",    OutakeNeoMotor.getBusVoltage());
+        SmartDashboard.putNumber("OutakeNeo/Speed",      OutakeNeoMotor.getEncoder().getVelocity());
     }
 }

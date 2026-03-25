@@ -112,7 +112,7 @@ public class RobotContainer {
               SmartDashboard.putNumber("Shooter/StickInput", input);
 
               if (Math.abs(input) > 0.0) {
-                turret.setManualOutput(input * 0.6);
+                turret.setManualOutput(input);
               } else {
                 turret.stop();
               }
@@ -152,12 +152,9 @@ public class RobotContainer {
     // ── Port 1 — Flywheelspin bumpers ────────────────────────────────────
 
     secondaryXbox.rightBumper()
-        .whileTrue(new RunCommand(() -> turret.turnRight(), turret))
+        .whileTrue(new RunCommand(() -> turret.Shoot(), turret))
         .onFalse(new InstantCommand(() -> turret.stopSpinning(), turret));
 
-    secondaryXbox.leftBumper()
-        .whileTrue(new RunCommand(() -> turret.turnLeft(), turret))
-        .onFalse(new InstantCommand(() -> turret.stopSpinning(), turret));
 
     // ── Port 1 — Transfer Y button ───────────────────────────────────────
     // Fixed: was transfer.Transfer() and transfer.stopTransfering()
